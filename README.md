@@ -1,46 +1,86 @@
-# Getting Started with Create React App and Redux
+# A Aplicação SPA
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+O tipo de aplicação escolhido foi um portal de notícias. Foi usada a NewsAPI (https://newsapi.org/) como fonte de artigos. Esta é uma api simples e um pouco limitada, principalmente pelo fato de não oferecer endpoint para obtenção dos conteudos completos dos artigos individuais. Por isso foi usado um endpoint para a requisição das notícias mais recentes (latest headlines) gerais e por categoria. Já para a página de detalhes da notícia os dados do artigo foram adquiridos por meio do "state" do componente Link do router. Como o conteudo disponibilizado pela api é curto, apenas para o objetivo deste trabalho, um paragrafo placeholder foi utilizado.
 
-## Available Scripts
+O porta de notícias possui:
+- Homepage (src/vews/Home): Contendo navegação e as noticias mais recentes
+- Página de categoria (src/vews/Category): Contendo as notícias mais recentes de cada categoria
+- Página da noícia individual (src/vews/Article): Contendo mais detalhes da noticia
 
-In the project directory, you can run:
+## O Framework CSS
 
-### `npm start`
+Por estar acostumada ao css normal sem uso de nenhum framework ou biblioteca alem de uma normalização, inicialmente estava inclinada a utilizar o Radix UI. Além dele ter uma boa variedade de componenents todos eles são "limpos" de estilo, o que me daria flexibilidade no design dos componentes. Contudo após analise superficial desta biblioteca de componentes percebi que não haviam componentes de layout.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Para o tipo de aplicação escolhida, considerei o layout como parte mais complexa já que não há a necessidade do uso de muitos componentes. Além da navegação, botões e links o que seria mais utilizado são elementos de superfície, containers, grids, boxes, etc. Contrário a esta aplicação, se tivesse optado por criar uma Playlist ou um ToDo List frameworks ou bibliotecas de componenets sem estilo ou mesmo a criação dos componentes estilizados por meio do styled componenets, seria uma melhor escolha.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Por fim escolhi a biblioteca de componentes estilizados Material UI (MUI). Com excessão de pequenas customizações mais significativas, esta biblioteca serviu perfeitamenete para este trabalho.
 
-### `npm test`
+## Descrição da estrutura e layout do portal
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Além das páginas, os principais componentes criados são os seguintes:
+- Header
+- Navigation
+- PageTitle
+- ArticlesGrid
+- Detail
+- Footer
 
-### `npm run build`
+O Footer dispensa muitas explicações por ser super simples contendo apenas os dois componentes do MUI, a Box e a Typography. Para os outros uma explicação mais detalhada é dada abaixo.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Para as poucas customizações globais e criação de variantes para alguns componentes foi criado uma const theme com o createTheme. As cores utilizadas no portal foram estabelecidas e gardadas na const colors para serem utilizadas no theme.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Foram customizados no theme as cores, primary.main, secondary.main, custom.light e custom.main. Além das cores, para o componente MuiCard foram criadas três variantes:
+- variant: 'featured' - utilizada para o Card das notícias destacadas;
+- variant: 'article' - utilizada para o Card das notícias em geral e
+- variant: 'detail' - utilizada para o Card da notícia individual.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Para a navegação uma variante foi criada para o MuiDivider e a cor default do texto(MuiTypography) foi modificada para a cor primary.main.
 
-### `npm run eject`
+### Header
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+O header consisti de logo com link para home e um menu responsivo para a versão mobile.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+A navegação entre categorias de notícias pode ser feita pelo menu desktop logo abaixo do Header ou, na versão tablet e e mobile, pelo menu off screen que aparece ao botão de menu no header ser clicado.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Além de container, button, divider, stack e IconButton, os componentes do MUI, mais importantes, utilizados para a estruturação do header foram:
+- AppBar - este componente foi o "container" para o header e todos seus elementos. Neste foram colocados tanto o logo do portal como o botão de abertura do menu mobile (hamburguer menu).
+- Drawer - este componente foi utilizado para o menu mobile contendo.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Navigation
 
-## Learn More
+A navegação entre categorias de notícias foi feita por este componente. Um componente simples que recebe a array de categorias e imprimi uma stack horizontal de botões do tipo link (react-router-dom Link).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Além do button do MUI foi utilizado o Stack para o layout unidimensional horizontal(row) dos buttons.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Por ser um componente específico para lidar com layouts unidimensionais o Stack não faz a quebra de linha caso a largura dos seus items ultrapasse a largura em que está contido. Este não se tornou um problema porque as categorias cabem na versão desktop, que é a única em que estão navegação aparece.
+
+### PageTitle
+
+Este é um componente simples que recebe o nome da categoria ou nada caso esteja na homepage. Ele foi criado utilizando apenas o box e a typography. Ele está presente em duas views a Home e a Category.
+
+### ArticlesGrid
+
+Este componente estabelece o layout dos cards de notícia. Além da utilização do Grid para criar o layout, dois componentes foram criados para apresentar as noticias, featured e article.
+
+#### Featured
+
+A primeira notícia é impressa com destaque por este componente que possui um layout um pouco diferente da apresentação das outras notícias.
+
+Como estruturação principal, foi utilizado o componente do MUI Card. A notícia então é apresentada em um card com imagem, se houver, meta, titulo, descrição e link.
+
+- o CardMedia foi utilizado para a imagem de destaque da notícia, caso haja uma. O layout do Card é dividido em duas colunas, sendo a primeira para esta imagem.
+- foi criado um componente comum entre os artigos para as informações de data e fonte da notícia, o ArticleMeta. A MUI Stack é utilizada para o layout destas informações juntamente com a MUI Chip.
+- O título e a descrição da notícia estão inseridos dentro do MUI CardContent.
+- o CardActions é utilizado como container para o link da notícia individual.
+
+#### Article
+
+Para as demais notícias no portal o Article é o componente utilizado. Ele é muito semelhante ao componente anterior(Featured), contudo contém algumas diferenças de layout significativas.
+
+Diferente do Featured que possui destaque na página possuindo, por isso, mais espaço. Cada px é importante para um card apresentar bem as notícias.
+
+O Layout deste componente se baseia principalmente na propriedade grid do css. Para a utilização deste "display: grid" o MUI Box foi utilizado com a prop sx para a estilização do componente. Foram criadas áreas para cada bloco(CardMedia, CardContent e CardActions). Como a api pode retornar null para a imagem condicionais foram necessárias para estruturar o card com e sem imagem.
+
+### Detail
+
+Este componente é o usa como container o MUI Card com suas partes, CardMedia, CardContent e CardActions. Possui um layout simples apresentando em rows sem colunas.
